@@ -84,8 +84,8 @@ df_gold_base = (
 
 # COMMAND ----------
 
-print("Loans:", df_loan.count())
-print("Gold base:", df_gold_base.count())
+print("Empréstimos:", df_loan.count())
+print("Base gold:", df_gold_base.count())
 
 # COMMAND ----------
 

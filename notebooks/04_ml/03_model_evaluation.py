@@ -41,13 +41,13 @@ from sklearn.metrics import (
     confusion_matrix
 )
 
-print("Accuracy:", accuracy_score(y_test, y_pred))
-print("Precision:", precision_score(y_test, y_pred))
-print("Recall:", recall_score(y_test, y_pred))
+print("Acurácia:", accuracy_score(y_test, y_pred))
+print("Precisão:", precision_score(y_test, y_pred))
+print("Recall (sensibilidade):", recall_score(y_test, y_pred))
 print("F1:", f1_score(y_test, y_pred))
 print("ROC-AUC:", roc_auc_score(y_test, y_prob))
 
-print("\nConfusion Matrix:")
+print("\nMatriz de confusão:")
 print(confusion_matrix(y_test, y_pred))
 
 # COMMAND ----------
@@ -121,16 +121,16 @@ plt.figure(figsize=(7, 5))
 plt.plot(fpr, tpr, label=f"ROC-AUC = {roc_auc:.3f}")
 plt.plot([0, 1], [0, 1], linestyle="--")
 
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("ROC Curve")
+plt.xlabel("Taxa de falsos positivos")
+plt.ylabel("Taxa de verdadeiros positivos")
+plt.title("Curva ROC")
 plt.legend()
 plt.show()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Curva Precision-Recall
+# MAGIC ## Curva Precisão-Recall
 # MAGIC
 # MAGIC Mais informativa que a ROC quando a classe positiva é rara.
 
@@ -152,11 +152,11 @@ plt.figure(figsize=(7, 5))
 plt.plot(
     recall,
     precision,
-    label=f"Average Precision = {average_precision:.3f}"
+    label=f"Precisão média = {average_precision:.3f}"
 )
 
-plt.xlabel("Recall")
-plt.ylabel("Precision")
-plt.title("Precision-Recall Curve")
+plt.xlabel("Recall (sensibilidade)")
+plt.ylabel("Precisão")
+plt.title("Curva Precisão-Recall")
 plt.legend()
 plt.show()

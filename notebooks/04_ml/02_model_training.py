@@ -36,7 +36,7 @@ print(X.shape)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Split treino e teste
+# MAGIC ## Divisão entre treino e teste
 # MAGIC
 # MAGIC 80% treino e 20% teste, estratificado pelo alvo, porque a classe de inadimplentes é pequena.
 

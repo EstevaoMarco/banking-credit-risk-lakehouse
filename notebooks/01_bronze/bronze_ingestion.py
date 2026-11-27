@@ -55,7 +55,7 @@ for file_name in files:
         .option("sep", ";")
         .load(f"{base_path}/{file_name}.csv"))
 
-    print("Schema:")
+    print("Esquema:")
     df.printSchema()
 
     print("Quantidade de linhas:")
@@ -208,7 +208,7 @@ for file_name in files:
         .saveAsTable(f"banking_project.bronze.{file_name}")
     )
 
-    print(f"{file_name} loaded successfully")
+    print(f"{file_name} carregado com sucesso")
 
 # COMMAND ----------
 
