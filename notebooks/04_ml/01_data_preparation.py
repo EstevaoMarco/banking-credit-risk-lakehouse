@@ -1,4 +1,13 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # ML 01: preparação dos dados
+# MAGIC
+# MAGIC Lê a tabela **gold.loan_risk_features** e mantém só os empréstimos com alvo definido (status A e B, contratos encerrados). Os contratos em andamento (C e D) não têm desfecho final e são pontuados no notebook 04_score_active_loans.
+# MAGIC
+# MAGIC O resultado é o DataFrame **pdf_model**, usado pelo notebook 02_model_training via %run. O split, o pré-processamento e o treino ficam no 02.
+
+# COMMAND ----------
+
 from pyspark.sql.functions import col
 df_ml = (
 
@@ -11,7 +20,21 @@ display(df_ml.limit(10))
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Conversão para pandas
+# MAGIC
+# MAGIC A amostra rotulada é pequena (234 linhas), então trabalhamos com pandas e scikit-learn.
+
+# COMMAND ----------
+
 pdf_ml = df_ml.toPandas()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Remoção de identificadores
+# MAGIC
+# MAGIC IDs, data do empréstimo e status não entram como features. O status já está representado no alvo default.
 
 # COMMAND ----------
 
@@ -30,6 +53,13 @@ pdf_ml = pdf_ml.drop(columns=columns_to_drop)
 print(pdf_ml.shape)
 
 print(pdf_ml["default"].value_counts())
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Seleção de features
+# MAGIC
+# MAGIC Subconjunto de features escolhido por grupo: dados do empréstimo e do cliente, contexto do distrito e comportamento da conta em 30, 90 e 180 dias.
 
 # COMMAND ----------
 
@@ -78,89 +108,3 @@ print(pdf_model.shape)
 
 print(pdf_ml.shape)
 print(pdf_ml.columns.tolist())
-
-# COMMAND ----------
-
-X = pdf_model.drop(columns=["default"])
-y = pdf_model["default"]
-
-# COMMAND ----------
-
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42,
-    stratify=y
-)
-
-# COMMAND ----------
-
-print(X_train.shape)
-print(X_test.shape)
-
-print(y_train.value_counts())
-print(y_test.value_counts())
-
-# COMMAND ----------
-
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-
-
-categorical_features = [
-    "gender",
-    "frequency"
-]
-
-numeric_features = [
-    col for col in X.columns
-    if col not in categorical_features
-]
-
-
-numeric_transformer = Pipeline(
-    steps=[
-        ("imputer", SimpleImputer(strategy="median")),
-        ("scaler", StandardScaler())
-    ]
-)
-
-
-categorical_transformer = Pipeline(
-    steps=[
-        ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("encoder", OneHotEncoder(handle_unknown="ignore"))
-    ]
-)
-
-
-preprocessor = ColumnTransformer(
-    transformers=[
-        ("num", numeric_transformer, numeric_features),
-        ("cat", categorical_transformer, categorical_features)
-    ]
-)
-
-# COMMAND ----------
-
-from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LogisticRegression
-
-model_pipeline = Pipeline(
-    steps=[
-        ("preprocessor", preprocessor),
-        (
-            "model",
-            LogisticRegression(
-                class_weight="balanced",
-                max_iter=1000,
-                random_state=42
-            )
-        )
-    ]
-)

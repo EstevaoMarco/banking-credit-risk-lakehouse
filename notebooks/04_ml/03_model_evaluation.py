@@ -1,11 +1,30 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # ML 03: avaliação do modelo
+# MAGIC
+# MAGIC Executa o notebook de treino e avalia o modelo com métricas no teste, validação cruzada e curvas ROC e Precision-Recall.
+
+# COMMAND ----------
+
 # MAGIC %run ./02_model_training
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Previsões no conjunto de teste
 
 # COMMAND ----------
 
 y_pred = model_pipeline.predict(X_test)
 
 y_prob = model_pipeline.predict_proba(X_test)[:, 1]
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Métricas no teste
+# MAGIC
+# MAGIC Com poucas linhas de teste (47, sendo 6 inadimplentes), essas métricas variam muito conforme o split.
 
 # COMMAND ----------
 
@@ -26,6 +45,13 @@ print("ROC-AUC:", roc_auc_score(y_test, y_prob))
 
 print("\nConfusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Validação cruzada
+# MAGIC
+# MAGIC StratifiedKFold com 5 folds. Como a amostra é pequena, a média e o desvio da validação cruzada são a métrica principal do projeto.
 
 # COMMAND ----------
 
@@ -75,6 +101,11 @@ display(
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Curva ROC
+
+# COMMAND ----------
+
 from sklearn.metrics import roc_curve, roc_auc_score
 import matplotlib.pyplot as plt
 
@@ -91,6 +122,13 @@ plt.ylabel("True Positive Rate")
 plt.title("ROC Curve")
 plt.legend()
 plt.show()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Curva Precision-Recall
+# MAGIC
+# MAGIC Mais informativa que a ROC quando a classe positiva é rara.
 
 # COMMAND ----------
 

@@ -1,8 +1,27 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Silver: loan
+# MAGIC
+# MAGIC Limpa a tabela de empréstimos (bronze.loan) e grava em **banking_project.silver.loan**.
+# MAGIC
+# MAGIC Transformações:
+# MAGIC - **date:** YYMMDD vira data
+# MAGIC - **amount, duration, payments:** cast para tipos numéricos
+# MAGIC - **status** é mantido como está (A, B, C, D) e vira o alvo na gold
+
+# COMMAND ----------
+
 df_loan = spark.table("banking_project.bronze.loan")
 
 display(df_loan.limit(10))
 df_loan.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Perfil de qualidade
+# MAGIC
+# MAGIC Contagem de nulos, linhas duplicadas e chaves repetidas antes de transformar.
 
 # COMMAND ----------
 
@@ -46,6 +65,11 @@ display(
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Transformações
+
+# COMMAND ----------
+
 from pyspark.sql.functions import col, substring, concat, lit, to_date
 
 df_loan_silver = (
@@ -84,6 +108,13 @@ display(
         for c in df_loan_silver.columns
     ])
 )
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Gravação e conferência
+# MAGIC
+# MAGIC Grava em Delta e confere o resultado.
 
 # COMMAND ----------
 

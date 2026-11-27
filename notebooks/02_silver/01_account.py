@@ -1,8 +1,26 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Silver: account
+# MAGIC
+# MAGIC Limpa a tabela de contas (bronze.account) e grava em **banking_project.silver.account**.
+# MAGIC
+# MAGIC Transformações:
+# MAGIC - **date:** texto no formato YYMMDD vira data (1993-01-01)
+# MAGIC - **frequency:** códigos em tcheco traduzidos (POPLATEK MESICNE = monthly, POPLATEK TYDNE = weekly, POPLATEK PO OBRATU = after_transaction)
+
+# COMMAND ----------
+
 df_account = spark.table("banking_project.bronze.account")
 
 display(df_account.limit(10))
 df_account.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Perfil de qualidade
+# MAGIC
+# MAGIC Contagem de nulos, linhas duplicadas e chaves repetidas antes de transformar.
 
 # COMMAND ----------
 
@@ -46,6 +64,11 @@ display(
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Transformações
+
+# COMMAND ----------
+
 from pyspark.sql.functions import col, when, substring, concat, lit, to_date
 
 df_account_silver = (
@@ -75,6 +98,13 @@ df_account_silver = (
 
 display(df_account_silver.limit(10))
 df_account_silver.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Gravação e conferência
+# MAGIC
+# MAGIC Grava em Delta e confere o resultado.
 
 # COMMAND ----------
 

@@ -1,8 +1,28 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Silver: trans
+# MAGIC
+# MAGIC Limpa a tabela de transações (bronze.trans, cerca de 1 milhão de linhas) e grava em **banking_project.silver.trans**.
+# MAGIC
+# MAGIC Transformações:
+# MAGIC - **date:** YYMMDD vira data, e **amount** e **balance** viram double
+# MAGIC - **type:** PRIJEM = credit, VYDAJ = debit, VYBER = withdrawal
+# MAGIC - **operation** e **k_symbol:** códigos em tcheco traduzidos para inglês
+# MAGIC - k_symbol vazio vira nulo
+
+# COMMAND ----------
+
 df_trans = spark.table("banking_project.bronze.trans")
 
 display(df_trans.limit(10))
 df_trans.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Perfil de qualidade
+# MAGIC
+# MAGIC Contagem de nulos, linhas duplicadas e chaves repetidas antes de transformar.
 
 # COMMAND ----------
 
@@ -34,6 +54,11 @@ display(
     .count()
     .filter(col("count") > 1)
 )
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Transformações
 
 # COMMAND ----------
 
@@ -212,16 +237,19 @@ display(
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Gravação e conferência
+# MAGIC
+# MAGIC Grava em Delta e confere o resultado.
+
+# COMMAND ----------
+
 (
     df_trans_silver.write
     .format("delta")
     .mode("overwrite")
     .saveAsTable("banking_project.silver.trans")
 )
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 

@@ -1,25 +1,37 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Bronze: ingestão dos arquivos brutos
+# MAGIC
+# MAGIC Lê os 6 arquivos CSV do dataset bancário tcheco (PKDD'99 / Berka) e grava cada um como tabela Delta no schema **banking_project.bronze**.
+# MAGIC
+# MAGIC | Arquivo | Conteúdo |
+# MAGIC |---|---|
+# MAGIC | account | contas |
+# MAGIC | client | clientes |
+# MAGIC | disp | relação entre clientes e contas |
+# MAGIC | district | dados demográficos dos distritos |
+# MAGIC | loan | empréstimos (com o status que vira o alvo) |
+# MAGIC | trans | transações (cerca de 1 milhão de linhas) |
+# MAGIC
+# MAGIC Os arquivos usam **;** como separador.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Arquivos de origem
+# MAGIC
+# MAGIC Os 6 CSVs do dataset ficam no Volume **/Volumes/banking_project/bronze/raw_files/**.
+
+# COMMAND ----------
+
 display(dbutils.fs.ls("/Volumes/banking_project/bronze/raw_files/"))
 
 # COMMAND ----------
 
-df_account = (
-    spark.read
-    .format("csv")
-    .option("header", "true")
-    .option("sep", ";")
-    .load("/Volumes/banking_project/bronze/raw_files/account.csv"))
-
-display(df_account)
-
-# COMMAND ----------
-
-df_account.printSchema()
-
-# COMMAND ----------
-
-display(df_account)
-df_account.printSchema()
+# MAGIC %md
+# MAGIC ## Visão geral de cada arquivo
+# MAGIC
+# MAGIC Schema, quantidade de linhas e amostra de cada CSV.
 
 # COMMAND ----------
 
@@ -51,6 +63,13 @@ for file_name in files:
 
     print("Amostra:")
     display(df.limit(5))
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Exploração de loan e trans
+# MAGIC
+# MAGIC Leitura dos arquivos em DataFrames para conhecer os status dos empréstimos e os códigos das transações, que são traduzidos na camada silver.
 
 # COMMAND ----------
 
@@ -154,6 +173,13 @@ display(
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Gravação das tabelas bronze
+# MAGIC
+# MAGIC Cada CSV é gravado como tabela Delta em **banking_project.bronze**, sem transformações e com todas as colunas como texto.
+
+# COMMAND ----------
+
 files = [
     "account",
     "client",
@@ -183,6 +209,11 @@ for file_name in files:
     )
 
     print(f"{file_name} loaded successfully")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Conferência
 
 # COMMAND ----------
 

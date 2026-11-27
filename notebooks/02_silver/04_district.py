@@ -1,8 +1,27 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Silver: district
+# MAGIC
+# MAGIC Limpa a tabela de distritos (bronze.district) e grava em **banking_project.silver.district**.
+# MAGIC
+# MAGIC Transformações:
+# MAGIC - Colunas A1 a A16 renomeadas para nomes descritivos (população, salário médio, desemprego, crimes etc.)
+# MAGIC - Valor **?** em unemployment_rate_1995 e crimes_1995 vira nulo
+# MAGIC - Cast das colunas numéricas para int e double
+
+# COMMAND ----------
+
 df_district = spark.table("banking_project.bronze.district")
 
 display(df_district.limit(10))
 df_district.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Perfil de qualidade
+# MAGIC
+# MAGIC Contagem de nulos, linhas duplicadas e chaves repetidas antes de transformar.
 
 # COMMAND ----------
 
@@ -34,6 +53,11 @@ display(
     .count()
     .filter(col("count") > 1)
 )
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Transformações
 
 # COMMAND ----------
 
@@ -145,6 +169,13 @@ print(df_district_silver.count())
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Gravação e conferência
+# MAGIC
+# MAGIC Grava em Delta e confere o resultado.
+
+# COMMAND ----------
+
 (
     df_district_silver.write
     .format("delta")
@@ -165,4 +196,4 @@ print(df_district_silver.count())
 # MAGIC %sql
 # MAGIC
 # MAGIC SELECT COUNT(*)
-# MAGIC FROM banking_project.silver.disp;
+# MAGIC FROM banking_project.silver.district;

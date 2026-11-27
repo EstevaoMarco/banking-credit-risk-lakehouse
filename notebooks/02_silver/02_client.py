@@ -1,8 +1,26 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Silver: client
+# MAGIC
+# MAGIC Limpa a tabela de clientes (bronze.client) e grava em **banking_project.silver.client**.
+# MAGIC
+# MAGIC O campo **birth_number** tem o formato YYMMDD, e para mulheres o mês vem somado de 50. A partir dele criamos:
+# MAGIC - **gender:** female quando o mês é maior que 50, senão male
+# MAGIC - **birth_date:** data de nascimento com o mês corrigido
+
+# COMMAND ----------
+
 df_client = spark.table("banking_project.bronze.client")
 
 display(df_client.limit(10))
 df_client.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Perfil de qualidade
+# MAGIC
+# MAGIC Contagem de nulos, linhas duplicadas e chaves repetidas antes de transformar.
 
 # COMMAND ----------
 
@@ -44,6 +62,11 @@ display(
     .groupBy(length(col("birth_number")).alias("birth_number_length"))
     .count()
 )
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Transformações
 
 # COMMAND ----------
 
@@ -154,6 +177,13 @@ display(
 # COMMAND ----------
 
 print(df_client_silver.count())
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Gravação e conferência
+# MAGIC
+# MAGIC Grava em Delta e confere o resultado.
 
 # COMMAND ----------
 
