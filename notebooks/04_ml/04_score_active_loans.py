@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # ML 04: pontuação dos contratos em andamento (C e D)
 # MAGIC
@@ -36,7 +40,7 @@ display(pdf_active.groupby("loan_status").size().reset_index(name="count"))
 # MAGIC %md
 # MAGIC ## Pontuação
 # MAGIC
-# MAGIC Usamos as mesmas colunas do treino (X_train.columns) e o pipeline já ajustado.
+# MAGIC São usadas as mesmas colunas do treino (X_train.columns) e o pipeline já ajustado.
 
 # COMMAND ----------
 

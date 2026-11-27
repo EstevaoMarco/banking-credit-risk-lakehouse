@@ -4,7 +4,7 @@
 # MAGIC
 # MAGIC Limpa a tabela de clientes (bronze.client) e grava em **banking_project.silver.client**.
 # MAGIC
-# MAGIC O campo **birth_number** tem o formato YYMMDD, e para mulheres o mês vem somado de 50. A partir dele criamos:
+# MAGIC O campo **birth_number** tem o formato YYMMDD, e para mulheres o mês vem somado de 50. A partir dele são criados:
 # MAGIC - **gender:** female quando o mês é maior que 50, senão male
 # MAGIC - **birth_date:** data de nascimento com o mês corrigido
 

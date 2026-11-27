@@ -23,7 +23,7 @@ display(df_ml.limit(10))
 # MAGIC %md
 # MAGIC ## Conversão para pandas
 # MAGIC
-# MAGIC A amostra rotulada é pequena (234 linhas), então trabalhamos com pandas e scikit-learn.
+# MAGIC A amostra rotulada é pequena (234 linhas), por isso o trabalho segue em pandas e scikit-learn.
 
 # COMMAND ----------
 

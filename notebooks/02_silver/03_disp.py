@@ -4,7 +4,7 @@
 # MAGIC
 # MAGIC Limpa a tabela de disposições (bronze.disp), que liga clientes a contas, e grava em **banking_project.silver.disp**.
 # MAGIC
-# MAGIC Transformação: **type** em minúsculas (owner ou disponent). Na gold usamos só o owner.
+# MAGIC Transformação: **type** em minúsculas (owner ou disponent). Na gold, só o owner é usado.
 
 # COMMAND ----------
 

@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # Gold: features de risco de crédito por empréstimo
 # MAGIC
@@ -32,7 +36,7 @@ from pyspark.sql.functions import col
 # MAGIC %md
 # MAGIC ## 1. Titular da conta
 # MAGIC
-# MAGIC Uma conta pode ter mais de um cliente (titular e dependente). Usamos apenas o **owner**, para ter um cliente por empréstimo. A célula seguinte confirma que cada conta tem exatamente um titular.
+# MAGIC Uma conta pode ter mais de um cliente (titular e dependente). Apenas o **owner** é considerado, para manter um cliente por empréstimo. A célula seguinte confirma que cada conta tem exatamente um titular.
 
 # COMMAND ----------
 
@@ -55,7 +59,7 @@ display(
 # MAGIC %md
 # MAGIC ## 2. Base do empréstimo
 # MAGIC
-# MAGIC Juntamos o empréstimo com a conta, o titular, o cliente e o distrito. Todas as junções são `left` a partir de loan, para não perder nenhum empréstimo. Depois conferimos que a contagem continua igual à de loan.
+# MAGIC O empréstimo é unido à conta, ao titular, ao cliente e ao distrito. Todas as junções são `left` a partir de loan, para não perder nenhum empréstimo. Em seguida, a contagem é conferida para garantir que continua igual à de loan.
 
 # COMMAND ----------
 
@@ -151,7 +155,7 @@ df_gold_base = (
 # MAGIC %md
 # MAGIC ### Validação das idades
 # MAGIC
-# MAGIC Conferimos a distribuição de idades e investigamos os empréstimos com idade menor que 18 anos. Esses casos foram mantidos na tabela.
+# MAGIC A distribuição de idades é conferida, e os empréstimos com idade menor que 18 anos são investigados. Esses casos foram mantidos na tabela.
 
 # COMMAND ----------
 
@@ -206,7 +210,7 @@ display(
 # MAGIC %md
 # MAGIC ## 4. Features de transações
 # MAGIC
-# MAGIC Para cada empréstimo, agregamos as transações da conta em janelas de **30, 90 e 180 dias antes da data do empréstimo**. Só entram transações com data anterior ao empréstimo, o que evita vazamento de informação do futuro para o modelo.
+# MAGIC Para cada empréstimo, as transações da conta são agregadas em janelas de **30, 90 e 180 dias antes da data do empréstimo**. Só entram transações com data anterior ao empréstimo, o que evita vazamento de informação do futuro para o modelo.
 # MAGIC
 # MAGIC Para cada janela: quantidade de transações, valor médio, total de créditos e débitos (saques em dinheiro, tipo withdrawal, contam como débito), saldo médio, saldo mínimo, quantidade de transações com saldo negativo e desvio padrão do saldo.
 
@@ -504,7 +508,7 @@ df_gold = (
 # MAGIC %md
 # MAGIC ## 8. Tabela final e gravação
 # MAGIC
-# MAGIC Selecionamos as colunas finais, conferimos nulos e gravamos em Delta.
+# MAGIC Seleção das colunas finais, conferência de nulos e gravação em Delta.
 
 # COMMAND ----------
 
